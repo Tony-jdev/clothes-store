@@ -1,0 +1,50 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}{% endblock title %}</title>
+
+  {% comment %} bootstrap {% endcomment %}
+  <link rel="stylesheet" href="{% static 'bootstrap\css\bootstrap.min.css' %}">
+  {% comment %} css {% endcomment %}
+  <link rel="stylesheet" href="{% static "css/base.css" %}">
+</head>
+<body>
+  <header class="header sticky-top">
+    <div class="header-container d-flex">
+      <nav class="header-nav pt-4">
+        <div class="pt-4">
+          <ul class="header-list d-flex">
+            <li>
+              <a href="#!" class="nav-a m-3">Home</a>
+            </li>
+            <li>
+              <a href="#!" class="nav-a m-3">Shop</a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+      <div class="header-logo">
+        <a href="#!">
+          <img src="{% static "img/header-logo.svg" %}" alt="header-logo" class="header__logo">
+        </a>
+      </div>
+      <div class="header__profile">
+        <a href="#!" class="m-3">LOGIN</a>
+      </div>
+    </div>
+  </header>
+
+  {% comment %} Content {% endcomment %}
+  <main class="main">
+    <div class="container"></div>
+  </main>
+
+  {% comment %} Додати для краси узорчікі {% endcomment %}
+
+  {% comment %} js for bootstrap {% endcomment %}
+  <script src="{% static "bootstrap\js\bootstrap.bundle.min.js" %}"></script>
+</body>
+</html>
