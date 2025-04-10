@@ -1,0 +1,30 @@
+{% extends "main/base.html" %}
+{% load static %}
+
+{% block  title%}
+    {{ product.name }}
+{% endblock title %}
+
+{% block content %}
+    <div class="detail__product">
+        <div class="detail__img">
+            {% comment %} добавити картинку, якщо нету в product. Мб просто приберу {% endcomment %}
+            <img src="{% if product.image %}{{ product.image.url }}{% endif %}" alt="" class="detail__image">
+        </div>
+        <div class="detail__description">
+            <h3 class="product__name">{{ product.name }}</h3>
+            <h3 class="product__category">Category: {{ product.category }}</h3>
+            <p class="product_desc">Description: {{ product.description|linebreaks }}</p>
+            {% if product.discount %}
+                <div class="card__discount">
+                  <p class="line">{{ product.price }}</p>
+                  <p class="line">{{ product.sell_price }}</p>
+                </div>
+            {% else %}
+                <p class="price">{{ product.price }}</p>
+            {% endif %}
+            <a href="#!" class="cart-btn"> Add to cart</a>
+        </div>
+    </div>
+{% endblock content %}
+
