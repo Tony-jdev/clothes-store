@@ -13,7 +13,7 @@
     </div>
     <div class="home__cards">
       {% for product in products %}
-          {% comment %} <a href="{{ product.get_absolute_url }}" class="home__card"> {% endcomment %}
+          <a href="{{ product.get_absolute_url }}" class="home__card">
             <img src="{{ product.image.url }}" alt="product-image" class="card__image">
             <h5 class="title__card">{{ product.name }}</h5>
             {% if product.discount %}
