@@ -3,29 +3,47 @@
 
 {% block title %}Home{% endblock title %}
 {% block content %}
-  <section class="home d-flex flex-column ">
-    <h2 class="home__title">
-      <a href="#!" class="home-btn mt-4">All Products</a>
-    </h2>
-
-    <div class="home__recomendation">
-      <h3 class="rec__title"><span>Popular Products</span></h3>
+  <section class="home py-3">
+    <div class="bg-dark py-2">
+      <div class="container px-4 px-lg-5 my-2">
+          <div class="text-center text-white">
+              <h3 class="display-4 fw-bolder fs-2">All products</h3>
+              <p class="lead fw-normal text-white-50 mb-0">Popular Products</p>
+          </div>
+      </div>
     </div>
-    <div class="home__cards">
+    <div class="container px-4 px-lg-5 mt-2">
+      <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
       {% for product in products %}
-          <a href="{{ product.get_absolute_url }}" class="home__card">
-            <img src="{{ product.image.url }}" alt="product-image" class="card__image">
-            <h5 class="title__card">{{ product.name }}</h5>
-            {% if product.discount %}
-                <div class="card__discount">
-                  <p class="line">{{ product.price }}</p>
-                  <p class="line">{{ product.sell_price }}</p>
+          <div class="col mb-5">
+            <div class="card h-100 home__card">
+              <div class="home__card_image">
+                <img src="{{ product.image.url }}" alt="product-image" class="card-img top">
+                <a href="{{ product.get_absolute_url }}" class="home__card_link"> </a>
+              </div>
+              <div class="card-body p-4">
+                <div class="text-center">
+                    <!-- Product name-->
+                    <h5 class="fw-bolder">{{ product.name }}</h5>
+                    <!-- Product price-->
+                    {% if product.discount %}
+                        <!-- Sale badge-->
+                        <div class="badge bg-dark text-white position-absolute" style="top: 0.5rem; right: 0.5rem">Sale</div>
+                        <span class="text-muted text-decoration-line-through">${{ product.price }}</span>
+                        ${{ product.sell_price }}
+                    {% else %}
+                        ${{ product.price }}</p>
+                    {% endif %}
                 </div>
-            {% else %}
-                <p class="price">{{ product.price }}</p>
-            {% endif %}
-          </a>
+                
+            </div>
+            <!-- Product actions-->
+            <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+              <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="#">Add to cart</a></div>
+            </div>
+          </div>
       {% endfor %}
+      </div>
     </div>
   </section>
 
