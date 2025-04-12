@@ -6,25 +6,44 @@
 {% endblock title %}
 
 {% block content %}
-    <div class="detail__product">
-        <div class="detail__img">
-            {% comment %} добавити картинку, якщо нету в product. Мб просто приберу {% endcomment %}
-            <img src="{% if product.image %}{{ product.image.url }}{% endif %}" alt="" class="detail__image">
-        </div>
-        <div class="detail__description">
-            <h3 class="product__name">{{ product.name }}</h3>
-            <h3 class="product__category">Category: {{ product.category }}</h3>
-            <p class="product_desc">Description: {{ product.description|linebreaks }}</p>
-            {% if product.discount %}
-                <div class="card__discount">
-                  <p class="line">{{ product.price }}</p>
-                  <p class="line">{{ product.sell_price }}</p>
-                </div>
-            {% else %}
-                <p class="price">{{ product.price }}</p>
-            {% endif %}
-            <a href="#!" class="cart-btn"> Add to cart</a>
-        </div>
+<section class="product-detail py-3">
+    <div class="bg-dark py-2">
+      <div class="container px-4 px-lg-5 my-2">
+          <div class="text-center text-white">
+              <h3 class="display-4 fw-bolder fs-2">Product details</h3>
+              <p class="lead fw-normal text-white-50 mb-0">{{ product.name }}</p>
+          </div>
+      </div>
     </div>
+    <div class="container px-4 px-lg-5 mt-2">
+        <div class="row gx-5 align-items-center">
+            <!-- Image -->
+        <div class="col-md-6 mb-4">
+            {% if product.image %}
+              <img src="{{ product.image.url }}" alt="{{ product.name }}" class="img-fluid rounded shadow-sm">
+            {% else %}
+              <img src="{% static 'img/no-image.png' %}" alt="No image" class="img-fluid rounded shadow-sm">
+            {% endif %}
+        </div>
+      <!-- Product Info -->
+      <div class="col-md-6">
+        <h2 class="fw-bold mb-3">{{ product.name }}</h2>
+        <h5 class="text-muted mb-3">Category: {{ product.category }}</h5>
+        <p class="mb-4">{{ product.description|linebreaks }}</p>
+
+        {% if product.discount %}
+          <div class="mb-4">
+            <span class="text-muted text-decoration-line-through">${{ product.price }}</span>
+            <span class="h5 text-danger fw-bold ms-2">${{ product.sell_price }}</span>
+          </div>
+        {% else %}
+          <p class="h5 mb-4">${{ product.price }}</p>
+        {% endif %}
+
+        <a href="#!" class="btn btn-outline-dark btn-lg">Add to cart</a>
+      </div>
+      </div>
+    </div>
+  </section>
 {% endblock content %}
 

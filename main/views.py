@@ -3,7 +3,7 @@ from .models import Product, Category
 
 # Create your views here.
 def popular_list(request):
-    products = Product.objects.filter(is_available=True)[:3]
+    products = Product.objects.filter(is_available=True)
 
     return render(request, 'main/index/index.html', {'products': products})
 
