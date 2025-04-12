@@ -16,7 +16,9 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
-
+    def get_absolute_url(self):
+        return reverse('main:filter-by-category', args=[self.slug])
+    
     class Meta:
         ordering = ['sort']
         indexes = [models.Index(fields=['name'])]
