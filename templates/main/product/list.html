@@ -15,74 +15,85 @@
           </div>
       </div>
     </div>
-    {% comment %} сайдбар для вибору по категоріях, тимчасовий div{% endcomment %}
-    <div class="category-sidebar d-flex flex-column">
-        <div class="home-title">
-            <h1>Categories</h1>
-        </div>
-        <ul class="d-flex flex-column mt-2">
-                <li>
-                    <a href="/shop/" class="sidebar-category-name">All categories</a>
-                </li>
-            {%for c in categories %}
-                <li {% if category.slug == c.slug %} class="selected" {% endif %}> 
-                    <a href="{{c.get_absolute_url}}" class="sidebar-category-name">{{c.name}}</a>
-                </li>
+    <div class="d-flex justify-content-center mt-4">
+       <!-- Сайдбар -->
+      <div class="col-md-3 ml-4">
+        <div class="category-sidebar py-3 ms-5 px-2 bg-light rounded shadow-sm">
+          <h5 class="mb-3">Categories</h5>
+          <ul class="list-unstyled">
+            <li><a href="/shop/" class="text-decoration-none d-block py-1 {% if not category %}fw-bold{% endif %}">All categories</a></li>
+            {% for c in categories %}
+            <li><a href="{{ c.get_absolute_url }}" class="text-decoration-none d-block py-1 {% if category.slug == c.slug %}fw-bold text-primary{% endif %}">{{ c.name }}</a></li>
             {% endfor %}
-        </ul>
-    </div>
+          </ul>
+        </div>
+      </div>
 
-    <div class="container px-4 px-lg-5 mt-2">
-      <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
-      {% for product in products %}
-          <div class="col mb-5">
-            <div class="card h-100 home__card">
-              <div class="home__card_image m-2">
-                <img src="{{ product.image.url }}" alt="product-image" class="card-img top">
-                <a href="{{ product.get_absolute_url }}" class="home__card_link"> </a>
-              </div>
-              <div class="card-body p-4">
-                <div class="text-center">
-                    <!-- Product name-->
-                    <h5 class="fw-bolder">{{ product.name }}</h5>
-                    <!-- Product price-->
-                    {% if product.discount %}
-                        <!-- Sale badge-->
-                        <div class="badge bg-dark text-white position-absolute" style="top: 0.5rem; right: 0.5rem">Sale</div>
-                        <span class="text-muted text-decoration-line-through">${{ product.price }}</span>
-                        ${{ product.sell_price }}
-                    {% else %}
-                        ${{ product.price }}</p>
-                    {% endif %}
+      <!-- Контент праворуч -->
+      <div class="container px-4 px-lg-5">
+        <div class="row">
+          <!-- Контейнер контенту -->
+          <div class="col-md-9 d-flex flex-column" style="min-height: 100vh;"> 
+            <!-- Сітка товарів -->
+            <div class="row gx-4 gx-lg-5 row-cols-1 row-cols-md-2 row-cols-xl-3 justify-content-center">
+              {% for product in products %}
+                <div class="col mb-5">
+                  <div class="card h-100 home__card">
+                    <div class="home__card_image m-2">
+                      <img src="{{ product.image.url }}" alt="product-image" class="card-img top">
+                      <a href="{{ product.get_absolute_url }}" class="home__card_link"> </a>
+                    </div>
+                    <div class="card-body p-4">
+                      <div class="text-center">
+                          <!-- Product name-->
+                          <h5 class="fw-bolder">{{ product.name }}</h5>
+                          <!-- Product price-->
+                          {% if product.discount %}
+                              <!-- Sale badge-->
+                              <div class="badge bg-dark text-white position-absolute" style="top: 0.5rem; right: 0.5rem">Sale</div>
+                              <span class="text-muted text-decoration-line-through">${{ product.price }}</span>
+                              ${{ product.sell_price }}
+                          {% else %}
+                              ${{ product.price }}</p>
+                          {% endif %}
+                      </div>
+                  </div>
+                  <!-- Product actions-->
+                  <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                    <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="#">Add to cart</a></div>
+                  </div>
                 </div>
+              </div>
+            {% endfor %}
             </div>
-            <!-- Product actions-->
-            <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-              <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="#">Add to cart</a></div>
-            </div>
+
+            <!-- Пагінація прикріплена донизу -->
+            <nav aria-label="Page navigation" class="mt-auto">
+              <ul class="pagination justify-content-center mt-4">
+                {% if products.has_previous %}
+                <li class="page-item"><a class="page-link" href="?page={{ products.previous_page_number }}">&laquo;</a></li>
+                {% else %}
+                <li class="page-item disabled"><span class="page-link">&laquo;</span></li>
+                {% endif %}
+
+                {% for page in products.paginator.page_range %}
+                {% if page >= products.number|add:-2 and page <= products.number|add:2 %}
+                <li class="page-item {% if products.number == page %}active{% endif %}">
+                  <a class="page-link" href="?page={{ page }}">{{ page }}</a>
+                </li>
+                {% endif %}
+                {% endfor %}
+
+                {% if products.has_next %}
+                <li class="page-item"><a class="page-link" href="?page={{ products.next_page_number }}">&raquo;</a></li>
+                {% else %}
+                <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
+                {% endif %}
+              </ul>
+            </nav>
           </div>
         </div>
-      {% endfor %}
+      </div>
     </div>
   </section>
-
-  {% comment %} тимчасовий html для пагінації{% endcomment%}
-  <div>
-    <ul class='d-flex flex-row' style="list-style: none; gap: 20px;">
-        <li class="{% if not products.has_previous%}disabled{%endif%}">
-            <a href="{% if products.has_previous %}?page={{ products.previous_page_number}}{% endif %}">Previous</a>
-        </li>
-        {% for page in products.paginator.page_range %}
-            {% if page >= products.number|add:-2 and page <= products.number|add:2%}
-                <li>
-                    <a href="?page={{ page }}" class="{% if not products.number == page%}disabled{%endif%}">{{ page }}</a>
-                </li>
-            {% endif%}
-        {% endfor %}
-        <li class="{% if not products.has_next%}disabled{%endif%}">
-            <a href="{% if  products.has_next %}?page={{ products.next_page_number}}{% endif %}">Next</a>
-        </li>
-    </ul>
-  </div>
-
 {% endblock content %}
