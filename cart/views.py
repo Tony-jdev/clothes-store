@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, \
     get_object_or_404
-from django.views.decorators.http import require_POST
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST, require_GET
 from main.models import Product
 from .cart import Cart
 from .forms import CartAddProductForm
@@ -30,3 +31,16 @@ def cart_remove(request, product_id):
 def cart_detail(request):
     cart = Cart(request)
     return render(request, 'cart/detail.html', {'cart': cart})
+
+
+
+@require_GET
+def cart_add_ajax(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    cart = Cart(request)
+    cart.add(product=product, quantity=1)
+    return JsonResponse({
+        'success': True,
+        'product': product.name,
+        'cart_count': len(cart)  # повертаємо нову кількість
+    })
