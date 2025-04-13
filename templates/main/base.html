@@ -30,9 +30,17 @@
             </ul>
             <form class="d-flex">
                 <button class="btn btn-outline-dark" type="submit">
-                    <i class="bi-cart-fill me-1"></i>
+                    <a href="{% url "cart:cart_detail" %}"><i class="bi-cart-fill me-1"></i></a>
                     Cart
-                    <span class="badge bg-dark text-white ms-1 rounded-pill">0</span>
+                    <span class="badge bg-dark text-white ms-1 rounded-pill">
+                        {% with cart_quantity=cart|length %}
+                        {% if cart_quantity > 0 %}
+                            {{ cart_quantity }}
+                        {% else %}
+                            0
+                        {% endif %}
+                    {% endwith %}
+                    </span>
                 </button>
             </form>
         </div>
