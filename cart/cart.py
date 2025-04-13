@@ -39,7 +39,8 @@ class Cart:
             cart[str(product.id)]['product'] = product
         for item in cart.values():
             item['price'] = Decimal(item['price'])
-            item['total_price'] = item['price'] * item['quantity']
+            item['total_price'] = round((Decimal(item['price']) - (Decimal(item['price']) \
+            * Decimal(item['product'].discount / 100))),2) * item['quantity']
             yield item
 
     def __len__(self):
