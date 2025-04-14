@@ -29,10 +29,19 @@
                 <li class="nav-item"><a class="nav-link active" aria-current="page" href="/shop/">Shop</a></li>
             </ul>
             <form class="d-flex">
-                <button class="btn btn-outline-dark" type="submit">
+                <button class="btn btn-outline-dark home__card_image" type="button" id="cart-button">
+                    <a href="{% url "cart:cart_detail" %}" class="home__card_link"></a>
                     <i class="bi-cart-fill me-1"></i>
                     Cart
-                    <span class="badge bg-dark text-white ms-1 rounded-pill">0</span>
+                    <span id="cart-count" class="badge bg-dark text-white ms-1 rounded-pill">
+                        {% with cart_quantity=cart|length %}
+                        {% if cart_quantity > 0 %}
+                            {{ cart_quantity }}
+                        {% else %}
+                            0
+                        {% endif %}
+                        {% endwith %}
+                    </span>
                 </button>
             </form>
         </div>
@@ -47,7 +56,19 @@
 
   {% comment %} Додати для краси узорчікі {% endcomment %}
 
+
+  <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+    <div id="cartToast" class="toast align-items-center text-white bg-success border-0"  data-bs-delay="3000" data-bs-autohide="true" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="d-flex">
+        <div class="toast-body">
+          Товар додано в кошик ✅
+        </div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Закрити"></button>
+      </div>
+    </div>
+  </div>
   {% comment %} js for bootstrap {% endcomment %}
   <script src="{% static "bootstrap\js\bootstrap.bundle.min.js" %}"></script>
+  <script src="{% static "js\main.js" %}"></script>
 </body>
 </html>
