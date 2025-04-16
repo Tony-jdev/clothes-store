@@ -33,7 +33,6 @@ def cart_detail(request):
     return render(request, 'cart/detail.html', {'cart': cart})
 
 
-
 @require_GET
 def cart_add_ajax(request, product_id):
     product = get_object_or_404(Product, id=product_id)

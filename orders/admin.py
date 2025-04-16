@@ -1,6 +1,5 @@
 from django.contrib import admin
 from .models import Order, OrderItem
-from django.utils.safestring import mark_safe
 
 
 class OrderItemInline(admin.TabularInline):

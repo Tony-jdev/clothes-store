@@ -4,8 +4,10 @@ from .models import Product, Category
 from cart.forms import CartAddProductForm
 
 # Create your views here.
+
+
 def popular_list(request):
-    products = Product.objects.filter(is_available=True)
+    products = Product.objects.filter(is_available=True)[:3]
 
     return render(request, 'main/index/index.html', {'products': products})
 
@@ -34,5 +36,4 @@ def product_list(request, category_slug=None):
 
     paginator = Paginator(products, 4)
     current_page = paginator.page(int(page))
-    return render(request, 'main/product/list.html', {'category' : category, 'categories' : categories, 'products' : current_page, 'slug_url' : category_slug})
-
+    return render(request, 'main/product/list.html', {'category': category, 'categories': categories, 'products': current_page, 'slug_url': category_slug})
