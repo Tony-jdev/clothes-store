@@ -1,8 +1,13 @@
 {% extends 'main/base.html' %}
-{% load static %}
 
-{% block title %}Create Order{% endblock title %}
+{% block title %}Order Created{% endblock title %}
 
 {% block content %}
-<h1>Payment completed!</h1>
-{% endblock content%}
+<div class="container my-5">
+  <div class="card shadow-sm p-5 text-center">
+    <h1 class="display-4 text-success">Your order has been successfully created!</h1>
+    <p class="lead mt-3">Thank you for shopping with us. Your order will be processed shortly.</p>
+    <a href="/shop" class="btn btn-primary mt-4 w-25 m-auto">Continue Shopping</a>
+  </div>
+</div>
+{% endblock content %}
