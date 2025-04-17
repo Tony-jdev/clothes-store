@@ -2,16 +2,13 @@ import pytest
 from django.urls import reverse
 from main.models import Category, Product
 
-# Автоматично додає `@pytest.mark.django_db` до всіх тестів у файлі
 pytestmark = pytest.mark.django_db
 
 # FIXTURES
 
 @pytest.fixture
 def category():
-    """
-    Створює тестову категорію для використання у тестах.
-    """
+    """Creates a test category."""
     return Category.objects.create(
         name="Test Category",
         slug="test-category"
@@ -19,9 +16,7 @@ def category():
 
 @pytest.fixture
 def product(category):
-    """
-    Створює тестовий продукт, пов'язаний із тестовою категорією.
-    """
+    """Creates a test product linked to the test category."""
     return Product.objects.create(
         name="Test Product",
         slug="test-product",
@@ -34,40 +29,30 @@ def product(category):
 # CATEGORY TESTS
 
 def test_category_creation(category):
-    """
-    Перевіряє створення категорії з правильними значеннями.
-    """
+    """Checks creation of category with correct values."""
     assert category.name == "Test Category"
     assert category.slug == "test-category"
     assert category.is_visible is True
 
 def test_category_get_absolute_url(category):
-    """
-    Перевіряє правильність методу get_absolute_url для Category.
-    """
+    """Checks the get_absolute_url method for Category."""
     expected_url = reverse('main:filter-by-category', args=[category.slug])
     assert category.get_absolute_url() == expected_url
 
 # PRODUCT TESTS
 
 def test_product_creation(product):
-    """
-    Перевіряє створення продукту з правильними значеннями.
-    """
+    """Checks creation of product with correct values."""
     assert product.name == "Test Product"
     assert product.price == 100.00
     assert product.discount == 10.0
 
 def test_product_sell_price(product):
-    """
-    Перевіряє, що метод sell_price() правильно розраховує ціну зі знижкою.
-    """
+    """Checks if sell_price() method calculates discounted price correctly."""
     assert product.sell_price() == 90.00  # 10% off
 
 def test_product_category(product, category):
-    """
-    Перевіряє зв'язок між продуктом і категорією.
-    """
+    """Checks the relation between product and category."""
     assert product.category == category
 
 # PARAMETRIZED TESTS
@@ -79,9 +64,7 @@ def test_product_category(product, category):
     (50.00, 50.0, 25.00),
 ])
 def test_sell_price_parametrized(category, price, discount, expected_price):
-    """
-    Перевіряє метод sell_price() для різних комбінацій цін і знижок.
-    """
+    """Checks sell_price() for various price/discount combinations."""
     product = Product.objects.create(
         name=f"Product {price}-{discount}",
         slug=f"product-{price}-{discount}",

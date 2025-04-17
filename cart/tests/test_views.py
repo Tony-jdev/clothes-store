@@ -3,12 +3,12 @@ from django.urls import reverse
 from django.test import Client
 from main.models import Product, Category
 
-# Створення категорії для тесту
+# Create a category for testing
 @pytest.fixture
 def category():
     return Category.objects.create(name="Test Category", slug="test-category")
 
-# Створення продукту, який використовуватиметься в тестах
+# Create a product to use in tests
 @pytest.fixture
 def product(category):
     return Product.objects.create(
@@ -19,7 +19,7 @@ def product(category):
         discount=10
     )
 
-# Клієнт із доступом до сесії
+# Client with session support
 @pytest.fixture
 def client_with_session():
     return Client()
@@ -28,9 +28,9 @@ def client_with_session():
 @pytest.mark.django_db
 def test_cart_add_valid(client_with_session, product):
     """
-    Тестує додавання продукту до кошика:
-    - перевіряє статус код та редирект
-    - перевіряє, що сесійний кошик зберігає правильну кількість товару
+    Tests adding a product to the cart:
+    - checks response status and redirect
+    - verifies session cart stores correct quantity
     """
     url = reverse("cart:cart_add", args=[product.id])
     data = {
@@ -39,11 +39,11 @@ def test_cart_add_valid(client_with_session, product):
     }
     response = client_with_session.post(url, data)
 
-    # Перевірка редиректу після додавання
+    # Check redirect after adding
     assert response.status_code == 302
     assert response.url == reverse("cart:cart_detail")
 
-    # Перевірка вмісту кошика в сесії
+    # Check cart content in session
     session_cart = client_with_session.session.get("cart")
     assert session_cart is not None
     assert str(product.id) in session_cart
@@ -53,15 +53,15 @@ def test_cart_add_valid(client_with_session, product):
 @pytest.mark.django_db
 def test_cart_remove(client_with_session, product):
     """
-    Тестує поступове видалення товару з кошика:
-    - перше видалення зменшує кількість
-    - друге — повністю видаляє товар
+    Tests gradual removal of a product from the cart:
+    - first removal decreases quantity
+    - second completely removes the item
     """
-    # Додаємо товар
+    # Add product
     add_url = reverse("cart:cart_add", args=[product.id])
     client_with_session.post(add_url, {"quantity": 2, "override": False})
 
-    # Перше видалення: має залишитися 1 одиниця
+    # First removal: 1 item should remain
     remove_url = reverse("cart:cart_remove", args=[product.id])
     response = client_with_session.post(remove_url)
     assert response.status_code == 302
@@ -71,20 +71,21 @@ def test_cart_remove(client_with_session, product):
     assert str(product.id) in session_cart
     assert session_cart[str(product.id)]["quantity"] == 1
 
-    # Друге видалення: товар повністю видаляється
+    # Second removal: item should be completely removed
     response = client_with_session.post(remove_url)
     session_cart = client_with_session.session.get("cart")
     assert str(product.id) not in session_cart
 
+
 @pytest.mark.django_db
 def test_cart_detail_view(client_with_session, product):
     """
-    Перевіряє, що сторінка перегляду кошика працює правильно:
-    - повертає статус 200
-    - передає контекст із кошиком
-    - використовує правильний шаблон
+    Verifies that the cart detail page works correctly:
+    - returns status 200
+    - passes cart in context
+    - uses the correct template
     """
-    # Додаємо товар до кошика
+    # Add product to cart
     add_url = reverse("cart:cart_add", args=[product.id])
     client_with_session.post(add_url, {"quantity": 1, "override": False})
 
@@ -95,12 +96,13 @@ def test_cart_detail_view(client_with_session, product):
     assert "cart" in response.context
     assert "cart/detail.html" in [t.name for t in response.templates]
 
+
 @pytest.mark.django_db
 def test_cart_add_ajax(client_with_session, product):
     """
-    Перевіряє AJAX-додавання товару до кошика:
-    - відповідь повертає JSON із підтвердженням успіху
-    - містить назву продукту та кількість товарів у кошику
+    Tests AJAX addition of product to cart:
+    - response returns JSON confirming success
+    - contains product name and cart item count
     """
     url = reverse("cart:cart_add_ajax", args=[product.id])
     response = client_with_session.get(url)
@@ -111,4 +113,3 @@ def test_cart_add_ajax(client_with_session, product):
     assert data["success"] is True
     assert data["product"] == product.name
     assert data["cart_count"] == 1
-

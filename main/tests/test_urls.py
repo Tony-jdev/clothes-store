@@ -10,7 +10,7 @@ from main.views import popular_list, product_list, product_detail
 ])
 def test_urls_resolve_to_correct_view(url_name, expected_view):
     """
-    Перевіряє, що іменовані URL-и зворотно резолвляться до правильних view-функцій.
+    Ensures named URLs resolve to the correct view functions.
     """
     args = ['test-category'] if 'filter-by-category' in url_name else ['test-product'] if 'detail' in url_name else []
     url = reverse(url_name, args=args)

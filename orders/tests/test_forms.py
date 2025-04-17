@@ -7,7 +7,7 @@ from orders.models import Order
 
 @pytest.mark.django_db
 def test_order_create_form_valid_data():
-    """Тестування форми OrderCreateForm з валідними даними"""
+    """Tests OrderCreateForm with valid data."""
     data = {
         'first_name': 'John',
         'last_name': 'Doe',
@@ -18,12 +18,12 @@ def test_order_create_form_valid_data():
     }
     
     form = OrderCreateForm(data=data)
-    assert form.is_valid()  # Перевірка, чи є форма валідною
+    assert form.is_valid()  
 
 
 @pytest.mark.django_db
 def test_order_create_form_invalid_data():
-    """Тестування форми OrderCreateForm з невалідними даними"""
+    """Tests OrderCreateForm with invalid data (missing first name)."""
     data = {
         'first_name': '',
         'last_name': 'Doe',
@@ -34,12 +34,12 @@ def test_order_create_form_invalid_data():
     }
     
     form = OrderCreateForm(data=data)
-    assert not form.is_valid()  # Перевірка, чи форма не є валідною через відсутність імені
+    assert not form.is_valid() 
 
 
 @pytest.mark.django_db
 def test_order_create_form_save():
-    """Тестування збереження форми OrderCreateForm"""
+    """Tests saving an OrderCreateForm."""
     data = {
         'first_name': 'Jane',
         'last_name': 'Doe',
@@ -59,8 +59,8 @@ def test_order_create_form_save():
 
 @pytest.mark.django_db
 def test_order_create_form_with_request():
-    """Тестування форми OrderCreateForm з передачею request в kwargs"""
-    request = None  # Сюди можна додати фейковий об'єкт request
+    """Tests OrderCreateForm with a request passed in kwargs."""
+    request = None  
     data = {
         'first_name': 'Alice',
         'last_name': 'Smith',
@@ -77,7 +77,7 @@ def test_order_create_form_with_request():
 
 @pytest.mark.django_db
 def test_order_create_form_empty_fields():
-    """Тестування форми OrderCreateForm з порожніми полями"""
+    """Tests OrderCreateForm with empty fields."""
     data = {
         'first_name': '',
         'last_name': '',

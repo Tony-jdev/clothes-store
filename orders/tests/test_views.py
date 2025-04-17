@@ -26,7 +26,7 @@ def product(category):
 
 @pytest.fixture
 def cart_with_item(client, product):
-    """Ініціалізація сесії з одним товаром у кошику."""
+    """Initializes session with one product in the cart."""
     session = client.session
     cart = session.get('cart', {})
     cart[str(product.id)] = {'quantity': 2, 'price': str(product.price)}
@@ -47,6 +47,7 @@ def request_factory_with_session():
 
 @pytest.mark.django_db
 def test_order_create_get_view(client):
+    """Tests GET request to order creation view."""
     response = client.get(reverse('orders:order_create'))
     assert response.status_code == 200
     assert 'form' in response.context
@@ -56,7 +57,7 @@ def test_order_create_get_view(client):
 
 @pytest.mark.django_db
 def test_order_create_post_valid(cart_with_item, product):
-    """Тест на успішне створення замовлення при POST."""
+    """Tests successful order creation via POST."""
     data = {
         'first_name': 'John',
         'last_name': 'Doe',
@@ -66,28 +67,26 @@ def test_order_create_post_valid(cart_with_item, product):
         'city': 'Testville'
     }
     response = cart_with_item.post(reverse('orders:order_create'), data=data)
-    
-    # Перевірка редіректу на сторінку оплати
+
     assert response.status_code == 302
     assert response.url == reverse('payment:process')
 
-    # Перевірка створення Order 
     order = Order.objects.first()
     assert order.first_name == 'John'
 
-    # Перевірка, що кошик очищений
     session = cart_with_item.session
     assert 'cart' not in session
 
 
 @pytest.mark.django_db
 @pytest.mark.parametrize("invalid_data", [
-    {},  # Всі поля порожні
-    {'first_name': 'Only Name'},  # Недостатньо даних
+    {},  # All fields empty
+    {'first_name': 'Only Name'},  # Insufficient data
 ])
 def test_order_create_invalid_form(cart_with_item, invalid_data):
+    """Tests order form with invalid input data."""
     response = cart_with_item.post(reverse('orders:order_create'), data=invalid_data)
-    assert response.status_code == 200  # Повертається форма з помилками
+    assert response.status_code == 200
     assert 'form' in response.context
     assert response.context['form'].errors
     assert Order.objects.count() == 0

@@ -3,12 +3,12 @@ from django.urls import reverse
 from main.models import Product, Category
 from django.core.files.uploadedfile import SimpleUploadedFile
 
-# ----- Фікстури -----
+# ----- Fixtures -----
 
 @pytest.fixture
 def category():
     """
-    Створює тестову категорію для використання в продуктах.
+    Creates a test category to be used with products.
     """
     return Category.objects.create(name="Test Category", slug="test-category")
 
@@ -16,11 +16,11 @@ def category():
 @pytest.fixture
 def image_file():
     """
-    Повертає примітивне зображення у вигляді об'єкта SimpleUploadedFile.
+    Returns a simple image as a SimpleUploadedFile object.
     """
     return SimpleUploadedFile(
         name='test_image.jpg',
-        content=b'\x47\x49\x46\x38\x89\x61',  # мінімальний вміст GIF-файлу
+        content=b'\x47\x49\x46\x38\x89\x61',  # minimal content for a GIF file
         content_type='image/jpeg'
     )
 
@@ -28,7 +28,7 @@ def image_file():
 @pytest.fixture
 def product(category, image_file):
     """
-    Створює тестовий продукт, прив’язаний до тестової категорії та зображення.
+    Creates a test product linked to the test category and image.
     """
     return Product.objects.create(
         name="Test Product",
@@ -40,13 +40,13 @@ def product(category, image_file):
         image=image_file
     )
 
-# ----- Тести представлень (views) -----
+# ----- View Tests -----
 
 @pytest.mark.django_db
 def test_popular_list_view(client, category, image_file):
     """
-    Перевіряє, що представлення популярних продуктів повертає 200 OK
-    і містить потрібний продукт у відповіді.
+    Checks that the popular products view returns 200 OK
+    and includes the expected product in the response.
     """
     Product.objects.create(
         name="Popular Product",
@@ -69,8 +69,8 @@ def test_popular_list_view(client, category, image_file):
 ])
 def test_product_detail_view(client, product, slug, expected_product_name):
     """
-    Перевіряє, що сторінка деталей продукту повертає 200 OK
-    і містить назву відповідного продукту.
+    Checks that the product detail page returns 200 OK
+    and includes the name of the corresponding product.
     """
     response = client.get(reverse('main:product-detail', args=[slug]))
     assert response.status_code == 200
@@ -83,8 +83,8 @@ def test_product_detail_view(client, product, slug, expected_product_name):
 ])
 def test_product_list_view_with_category(client, product, category, category_slug, expected_product_name):
     """
-    Перевіряє, що список продуктів по категорії повертає 200 OK
-    і містить відповідний продукт.
+    Checks that the product list by category returns 200 OK
+    and includes the expected product.
     """
     response = client.get(reverse('main:filter-by-category', args=[category_slug]))
     assert response.status_code == 200
@@ -94,8 +94,8 @@ def test_product_list_view_with_category(client, product, category, category_slu
 @pytest.mark.django_db
 def test_product_list_view_without_category(client, product):
     """
-    Перевіряє, що загальний список продуктів повертає 200 OK
-    та передає список продуктів у контекст шаблону.
+    Checks that the general product list view returns 200 OK
+    and passes the product list in the template context.
     """
     response = client.get(reverse('main:product-list'))
     assert response.status_code == 200

@@ -5,13 +5,13 @@ from main.models import Product, Category
 @pytest.mark.django_db
 @pytest.fixture
 def category():
-    """Фікстура для створення категорії товару."""
+    """Fixture to create a product category."""
     return Category.objects.create(name="Test Category", slug="test-category")
 
 @pytest.mark.django_db
 @pytest.fixture
 def product(category):
-    """Фікстура для створення тестового продукту, прив'язаного до категорії."""
+    """Fixture to create a test product linked to a category."""
     return Product.objects.create(
         name="Test Product",
         slug="test-product",
@@ -23,7 +23,7 @@ def product(category):
 @pytest.mark.django_db
 @pytest.fixture
 def order():
-    """Фікстура для створення замовлення."""
+    """Fixture to create an order."""
     return Order.objects.create(
         first_name="John",
         last_name="Doe",
@@ -40,32 +40,24 @@ def order():
     (25.00, 5, 125.00),
 ])
 def test_order_item_get_cost(order, product, price, quantity, expected_cost):
-    """
-    Перевіряє правильність обчислення вартості одиниці товару в замовленні.
-    """
+    """Checks that OrderItem.get_cost() computes correctly."""
     item = OrderItem.objects.create(order=order, product=product, price=price, quantity=quantity)
     assert item.get_cost() == expected_cost
 
 @pytest.mark.django_db
 def test_order_get_total_cost(order, product):
-    """
-    Перевіряє правильність обчислення загальної вартості замовлення.
-    """
+    """Checks total order cost calculation."""
     OrderItem.objects.create(order=order, product=product, price=10.00, quantity=2)
     OrderItem.objects.create(order=order, product=product, price=5.00, quantity=4)
     assert order.get_total_cost() == 40.00
 
 @pytest.mark.django_db
 def test_order_str(order):
-    """
-    Перевіряє коректність строкового представлення замовлення.
-    """
+    """Checks string representation of an order."""
     assert str(order) == f'Order {order.id}'
 
 @pytest.mark.django_db
 def test_order_item_str(order, product):
-    """
-    Перевіряє коректність строкового представлення елемента замовлення.
-    """
+    """Checks string representation of an order item."""
     item = OrderItem.objects.create(order=order, product=product, price=10.00, quantity=1)
     assert str(item) == str(item.id)

@@ -10,8 +10,8 @@ from cart import views
 ])
 def test_cart_urls_reverse_and_resolve(name, kwargs, view_func):
     """
-    Перевіряє, що кожен іменований маршрут у кошику (cart)
-    правильно резолвиться до відповідної view-функції.
+    Checks that each named route in the cart resolves correctly
+    to the corresponding view function.
     """
     url = reverse(name, kwargs=kwargs)
     resolved = resolve(url)
