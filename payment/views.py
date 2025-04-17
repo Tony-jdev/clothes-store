@@ -9,6 +9,7 @@ import stripe
 stripe.api_key = settings.STRIPE_SECRET_KEY
 stripe.api_version = settings.STRIPE_API_VERSION
 
+
 def payment_process(request):
     """
     Handle the Stripe payment session creation and redirect user to Stripe Checkout.
@@ -38,13 +39,13 @@ def payment_process(request):
         session_data = {
             'mode': 'payment',
             'client_reference_id': order.id,
-            'success_url' : success_url,
-            'cancel_url' : cancel_url,
+            'success_url': success_url,
+            'cancel_url': cancel_url,
             'line_items': []
         }
         for item in order.items.all():
             price = item.product.sell_price()
-            session_data['line_items'].append({ 
+            session_data['line_items'].append({
                 'price_data': {
                     'unit_amount': int(price * Decimal(100)),
                     'currency': 'usd',
@@ -57,7 +58,7 @@ def payment_process(request):
         session = stripe.checkout.Session.create(**session_data)
         return redirect(session.url, code=303)
 
-    
+
 def payment_completed(request):
     """
     Display the payment completed page.
@@ -71,6 +72,7 @@ def payment_completed(request):
         HttpResponse: Rendered template for payment success.
     """
     return render(request, 'payment/completed.html')
+
 
 def payment_canceled(request):
     """

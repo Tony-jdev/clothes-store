@@ -2,10 +2,8 @@ import stripe
 import stripe.error
 from django.conf import settings
 from django.http import HttpResponse
-from main.models import Product
 from orders.models import Order
 from django.views.decorators.csrf import csrf_exempt
-
 
 
 @csrf_exempt
@@ -38,15 +36,14 @@ def stripe_webhook(request):
 
     except ValueError:
         return HttpResponse(status=400)
-    except stripe.error.SignatureVerificationError as e:
+    except stripe.error.SignatureVerificationError:
         return HttpResponse(status=400)
-
 
     if event.type == 'checkout.session.completed':
         session = event.data.object
 
         if session.mode == 'payment' and session.payment_status == 'paid':
-            try: 
+            try:
                 order = Order.objects.get(id=session.client_reference_id)
             except Order.DoesNotExist:
                 return HttpResponse(status=404)

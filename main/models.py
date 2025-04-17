@@ -12,13 +12,12 @@ class Category(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-
     def __str__(self):
         return self.name
 
     def get_absolute_url(self):
         return reverse('main:filter-by-category', args=[self.slug])
-    
+
     class Meta:
         ordering = ['sort']
         indexes = [models.Index(fields=['name'])]
@@ -47,16 +46,13 @@ class Product(models.Model):
     def __str__(self):
         return self.name
 
-
     def get_absolute_url(self):
         return reverse('main:product-detail', kwargs={'slug': self.slug})
-
 
     def sell_price(self):
         if self.discount:
             return round(self.price * (1 - self.discount / 100), 2)
         return self.price
-
 
     class Meta:
         ordering = ['sort']

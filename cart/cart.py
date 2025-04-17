@@ -45,8 +45,7 @@ class Cart:
             cart[str(product.id)]['product'] = product
         for item in cart.values():
             item['price'] = Decimal(item['price'])
-            item['total_price'] = round((Decimal(item['price']) - (Decimal(item['price']) \
-            * Decimal(item['product'].discount / 100))),2) * item['quantity']
+            item['total_price'] = round((Decimal(item['price']) - (Decimal(item['price']) * Decimal(item['product'].discount / 100))), 2) * item['quantity']
             yield item
 
     def __len__(self):
@@ -56,7 +55,6 @@ class Cart:
         del self.session[settings.CART_SESSION_ID]
 
     def get_total_price(self):
-        total = sum((Decimal(item['price']) - (Decimal(item['price']) \
-            * Decimal(item['product'].discount / 100))) * item['quantity']
-                for item in self.cart.values())
+        total = sum((Decimal(item['price']) - (Decimal(item['price']) * Decimal(item['product'].discount / 100))) * item['quantity']
+                    for item in self.cart.values())
         return format(total, '.2f')

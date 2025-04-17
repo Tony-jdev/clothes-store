@@ -64,5 +64,4 @@ def product_list(request, category_slug=None):
 
     paginator = Paginator(products, 4)
     current_page = paginator.page(int(page))
-    return render(request, 'main/product/list.html', {'category' : category, 'categories' : categories, 'products' : current_page, 'slug_url' : category_slug})
-
+    return render(request, 'main/product/list.html', {'category': category, 'categories': categories, 'products': current_page, 'slug_url': category_slug})
