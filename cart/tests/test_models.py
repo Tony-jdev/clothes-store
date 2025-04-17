@@ -8,11 +8,13 @@ from cart.cart import Cart
 
 @pytest.fixture
 def category():
+    """Створює тестову категорію продуктів."""
     return Category.objects.create(name="Test Category", slug="test-category")
 
 
 @pytest.fixture
 def product(category):
+    """Створює тестовий продукт із знижкою 10%."""
     return Product.objects.create(
         name="Test Product",
         slug="test-product",
@@ -24,6 +26,7 @@ def product(category):
 
 @pytest.fixture
 def product2(category):
+    """Створює другий тестовий продукт із знижкою 20%."""
     return Product.objects.create(
         name="Second Product",
         slug="second-product",
@@ -35,9 +38,9 @@ def product2(category):
 
 @pytest.fixture
 def request_with_session():
+    """Ініціалізує об'єкт запиту з сесією."""
     factory = RequestFactory()
     request = factory.get('/')
-    # Імітація сесії
     middleware = __import__('django.contrib.sessions.middleware').contrib.sessions.middleware.SessionMiddleware(lambda r: r)
     middleware.process_request(request)
     request.session.save()
@@ -46,11 +49,13 @@ def request_with_session():
 
 @pytest.fixture
 def cart(request_with_session):
+    """Створює об'єкт кошика, пов’язаний із сесією."""
     return Cart(request_with_session)
 
 
 @pytest.mark.django_db
 def test_add_product_to_cart(cart, product):
+    """Перевіряє додавання продукту до кошика з кількістю."""
     cart.add(product=product, quantity=2)
     cart_items = list(cart)
     assert len(cart_items) == 1
@@ -61,6 +66,7 @@ def test_add_product_to_cart(cart, product):
 
 @pytest.mark.django_db
 def test_override_quantity(cart, product):
+    """Перевіряє перевизначення кількості продукту в кошику."""
     cart.add(product=product, quantity=1)
     cart.add(product=product, quantity=5, override_quantity=True)
     assert len(cart) == 5
@@ -68,6 +74,7 @@ def test_override_quantity(cart, product):
 
 @pytest.mark.django_db
 def test_remove_product(cart, product):
+    """Перевіряє видалення продукту з кошика."""
     cart.add(product=product, quantity=3)
     cart.remove(product)
     assert len(cart) == 2
@@ -78,6 +85,7 @@ def test_remove_product(cart, product):
 
 @pytest.mark.django_db
 def test_clear_cart(cart, product, product2):
+    """Перевіряє очищення кошика."""
     cart.add(product=product, quantity=1)
     cart.add(product=product2, quantity=1)
     assert len(cart) == 2
@@ -87,10 +95,11 @@ def test_clear_cart(cart, product, product2):
 
 @pytest.mark.django_db
 def test_get_total_price(cart, product, product2):
+    """Перевіряє розрахунок загальної вартості з урахуванням знижок."""
     cart.add(product=product, quantity=2)
     cart.add(product=product2, quantity=1)
 
-    _ = list(cart) #щоб додати 'product' до кожного item
+    _ = list(cart)  # Щоб додати 'product' до кожного item
     total = Decimal(cart.get_total_price())
     expected = round((100 - 10) * 2 + (50 - 10), 2)
     assert total == expected

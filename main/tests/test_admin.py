@@ -5,11 +5,19 @@ from main.models import Category, Product
 
 @pytest.mark.django_db
 def test_category_registered():
+    """
+    Перевіряє, що модель Category зареєстрована в адмін-панелі
+    і використовує правильний клас адміністратора (CategoryAdmin).
+    """
     assert Category in admin.site._registry
     assert isinstance(admin.site._registry[Category], CategoryAdmin)
 
 @pytest.mark.django_db
 def test_product_registered():
+    """
+    Перевіряє, що модель Product зареєстрована в адмін-панелі
+    і використовує правильний клас адміністратора (ProductAdmin).
+    """
     assert Product in admin.site._registry
     assert isinstance(admin.site._registry[Product], ProductAdmin)
 
@@ -29,5 +37,13 @@ def test_product_registered():
     }),
 ])
 def test_admin_config(admin_class, expected):
+    """
+    Перевіряє, що класи адміністраторів мають правильну конфігурацію:
+    - list_display
+    - list_display_links
+    - list_editable
+    - prepopulated_fields
+    - list_filter (якщо задано)
+    """
     for attr, value in expected.items():
         assert getattr(admin_class, attr) == value
